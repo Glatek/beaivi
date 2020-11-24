@@ -31,7 +31,9 @@
     "tap": "^14.11.0"
   },
   "scripts": {
-    "pretest": "eslint index.js test.js",
+    "eslint": "eslint index.js test.js",
+    "ts": "tsc -p jsconfig.json --noEmit",
+    "pretest": "npm run eslint && npm run ts",
     "test": "npx ava"
   }
 }

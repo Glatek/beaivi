@@ -114,13 +114,20 @@ export function getPosition (date, lat, lng) {
 
 // sun times configuration (angle, morning name, evening name)
 
+/** @typedef SunTime
+ * @prop {string} riseName
+ * @prop {string} setName
+ * @prop {number} angle
+ */
+
+/* @type {Array<SunTime>} */
 export const times = [
-  [-0.833, 'sunrise', 'sunset'],
-  [-0.3, 'sunriseEnd', 'sunsetStart'],
-  [-6, 'dawn', 'dusk'],
-  [-12, 'nauticalDawn', 'nauticalDusk'],
-  [-18, 'nightEnd', 'night'],
-  [6, 'goldenHourEnd', 'goldenHour']
+  { angle: -0.833, riseName: 'sunrise', setName: 'sunset' },
+  { angle: -0.3, riseName: 'sunriseEnd', setName: 'sunsetStart' },
+  { angle: -6, riseName: 'dawn', setName: 'dusk' },
+  { angle: -12, riseName: 'nauticalDawn', setName: 'nauticalDusk' },
+  { angle: -18, riseName: 'nightEnd', setName: 'night' },
+  { angle: 6, riseName: 'goldenHourEnd', setName: 'goldenHour' }
 ];
 
 // adds a custom time to the times config
@@ -131,7 +138,7 @@ export const times = [
  * @param {string} setName
  */
 export function addTime (angle, riseName, setName) {
-  times.push([angle, riseName, setName]);
+  times.push({ angle, riseName, setName });
 }
 
 // calculations for sun times
@@ -202,13 +209,13 @@ export function getTimes (date, lat, lng, height) {
 
   for (let i = 0, len = times.length; i < len; i += 1) {
     time = times[i];
-    h0 = (time[0] + dh) * rad;
+    h0 = (time.angle + dh) * rad;
 
     Jset = getSetJ(h0, lw, phi, dec, n, M, L);
     Jrise = Jnoon - (Jset - Jnoon);
 
-    result[time[1]] = fromJulian(Jrise);
-    result[time[2]] = fromJulian(Jset);
+    result[time.riseName] = fromJulian(Jrise);
+    result[time.setName] = fromJulian(Jset);
   }
 
   return result;
