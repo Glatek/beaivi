@@ -1,7 +1,7 @@
 {
   "name": "beaivi",
   "type": "module",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A tiny JavaScript library for calculating sun/moon positions and phases.",
   "homepage": "https://github.com/Vufuzi/beaivi",
   "keywords": [
@@ -35,7 +35,7 @@
     "esbuild": "^0.8.56"
   },
   "scripts": {
-    "publish": "time ./scripts/publish.sh",
+    "release": "time ./scripts/release.sh",
     "build": "time ./scripts/build.sh",
     "eslint": "eslint index.js test.js",
     "ts": "tsc -p jsconfig.json --noEmit",
