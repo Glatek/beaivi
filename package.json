@@ -35,7 +35,7 @@
     "esbuild": "^0.8.56"
   },
   "scripts": {
-    "publish": "time ./scripts/publish.sh",
+    "release": "time ./scripts/release.sh",
     "build": "time ./scripts/build.sh",
     "eslint": "eslint index.js test.js",
     "ts": "tsc -p jsconfig.json --noEmit",
