@@ -28,6 +28,7 @@
   "exports": {
     "import": "./index.js"
   },
+  "types": "./index.d.ts",
   "devDependencies": {
     "ava": "^3.13.0",
     "eslint": "^7.14.0",

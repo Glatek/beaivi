@@ -1,7 +1,7 @@
 {
   "name": "beaivi",
   "type": "module",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A tiny JavaScript library for calculating sun/moon positions and phases.",
   "homepage": "https://github.com/Vufuzi/beaivi",
   "keywords": [
@@ -15,6 +15,7 @@
     "moon",
     "illumination"
   ],
+  "license": "BSD",
   "contributors": [
     "Vladimir Agafonkin <agafonkin@gmail.com> (https://github.com/mourner)",
     "Jeremy Karlsson <karlsson@jeremy.se> (https://jeremy.se)"
