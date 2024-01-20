@@ -1,4 +1,4 @@
-import test from 'ava';
+import { test, expect } from 'vitest';
 import * as Beaivi from './index.js';
 
 function near (val1, val2, margin) {
@@ -37,15 +37,15 @@ const heightTestTimes = {
 test('getPosition returns azimuth and altitude for the given time and location', t => {
   var sunPos = Beaivi.getPosition(date, lat, lng);
 
-  t.truthy(near(sunPos.azimuth, -2.5003175907168385), 'azimuth');
-  t.truthy(near(sunPos.altitude, -0.7000406838781611), 'altitude');
+  expect(near(sunPos.azimuth, -2.5003175907168385)).toBe(true);
+  expect(near(sunPos.altitude, -0.7000406838781611)).toBe(true);
 });
 
 test('getTimes returns sun phases for the given date and location', t => {
   const times = Beaivi.getTimes(date, lat, lng);
 
   Object.keys(testTimes).forEach(testTime => {
-    t.is(new Date(testTimes[testTime]).toUTCString(), times[testTime].toUTCString(), testTime);
+    expect(times[testTime].toUTCString()).toBe(new Date(testTimes[testTime]).toUTCString());
   });
 });
 
@@ -53,29 +53,29 @@ test('getTimes adjusts sun phases when additionally given the observer height', 
   const times = Beaivi.getTimes(date, lat, lng, height);
 
   Object.keys(heightTestTimes).forEach(testTime => {
-    t.is(new Date(heightTestTimes[testTime]).toUTCString(), times[testTime].toUTCString(), testTime);
+    expect(times[testTime].toUTCString()).toBe(new Date(heightTestTimes[testTime]).toUTCString());
   });
 });
 
 test('getMoonPosition returns moon position data given time and location', t => {
   const moonPos = Beaivi.getMoonPosition(date, lat, lng);
 
-  t.truthy(near(moonPos.azimuth, -0.9783999522438226), 'azimuth');
-  t.truthy(near(moonPos.altitude, 0.014551482243892251), 'altitude');
-  t.truthy(near(moonPos.distance, 364121.37256256194), 'distance');
+  expect(near(moonPos.azimuth, -0.9783999522438226)).toBe(true);
+  expect(near(moonPos.altitude, 0.014551482243892251)).toBe(true);
+  expect(near(moonPos.distance, 364121.37256256194)).toBe(true);
 });
 
 test('getMoonIllumination returns fraction and angle of moon\'s illuminated limb and phase', t => {
   const moonIllum = Beaivi.getMoonIllumination(date);
 
-  t.truthy(near(moonIllum.fraction, 0.4848068202456373), 'fraction');
-  t.truthy(near(moonIllum.phase, 0.7548368838538762), 'phase');
-  t.truthy(near(moonIllum.angle, 1.6732942678578346), 'angle');
+  expect(near(moonIllum.fraction, 0.4848068202456373)).toBe(true);
+  expect(near(moonIllum.phase, 0.7548368838538762)).toBe(true);
+  expect(near(moonIllum.angle, 1.6732942678578346)).toBe(true);
 });
 
 test('getMoonTimes returns moon rise and set times', t => {
   const moonTimes = Beaivi.getMoonTimes(new Date('2013-03-04UTC'), lat, lng, true);
 
-  t.is(moonTimes.rise.toUTCString(), 'Mon, 04 Mar 2013 23:54:29 GMT');
-  t.is(moonTimes.set.toUTCString(), 'Mon, 04 Mar 2013 07:47:58 GMT');
+  expect(moonTimes.rise.toUTCString()).toBe('Mon, 04 Mar 2013 23:54:29 GMT');
+  expect(moonTimes.set.toUTCString()).toBe('Mon, 04 Mar 2013 07:47:58 GMT');
 });

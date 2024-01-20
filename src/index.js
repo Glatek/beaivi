@@ -10,15 +10,15 @@ const dayMs = 1000 * 60 * 60 * 24;
 const J1970 = 2440588;
 const J2000 = 2451545;
 
-function toJulian (date) {
-  return (date.valueOf() / dayMs) - 0.5 + J1970;
+function toJulian(date) {
+  return date.valueOf() / dayMs - 0.5 + J1970;
 }
 
-function fromJulian (j) {
+function fromJulian(j) {
   return new Date((j + 0.5 - J1970) * dayMs);
 }
 
-function toDays (date) {
+function toDays(date) {
   return toJulian(date) - J2000;
 }
 
@@ -26,33 +26,33 @@ function toDays (date) {
 
 const e = rad * 23.4397; // Obliquity of the Earth.
 
-function rightAscension (l, b) {
+function rightAscension(l, b) {
   const { sin, cos, tan, atan2 } = Math;
 
   return atan2(sin(l) * cos(e) - tan(b) * sin(e), cos(l));
 }
-function declination (l, b) {
+function declination(l, b) {
   const { asin, sin, cos } = Math;
 
   return asin(sin(b) * cos(e) + cos(b) * sin(e) * sin(l));
 }
 
-function azimuth (H, phi, dec) {
+function azimuth(H, phi, dec) {
   const { atan2, sin, cos, tan } = Math;
 
   return atan2(sin(H), cos(H) * sin(phi) - tan(dec) * cos(phi));
 }
-function altitude (H, phi, dec) {
+function altitude(H, phi, dec) {
   const { asin, sin, cos } = Math;
 
   return asin(sin(phi) * sin(dec) + cos(phi) * cos(dec) * cos(H));
 }
 
-function siderealTime (d, lw) {
+function siderealTime(d, lw) {
   return rad * (280.16 + 360.9856235 * d) - lw;
 }
 
-function astroRefraction (h) {
+function astroRefraction(h) {
   const { tan } = Math;
   // the following formula works for positive altitudes only.
 
@@ -67,11 +67,11 @@ function astroRefraction (h) {
 
 // general sun calculations
 
-function solarMeanAnomaly (d) {
+function solarMeanAnomaly(d) {
   return rad * (357.5291 + 0.98560028 * d);
 }
 
-function eclipticLongitude (M) {
+function eclipticLongitude(M) {
   const { sin, PI } = Math;
 
   const C = rad * (1.9148 * sin(M) + 0.02 * sin(2 * M) + 0.0003 * sin(3 * M)); // equation of center
@@ -80,35 +80,33 @@ function eclipticLongitude (M) {
   return M + C + P + PI;
 }
 
-function sunCoords (d) {
+function sunCoords(d) {
   const M = solarMeanAnomaly(d);
   const L = eclipticLongitude(M);
 
   return {
     dec: declination(L, 0),
-    ra: rightAscension(L, 0)
+    ra: rightAscension(L, 0),
   };
 }
 
 // calculates sun position for a given date and latitude/longitude
 
 /**
- *
  * @param {Date} date
  * @param {number} lat
  * @param {number} lng
  */
-export function getPosition (date, lat, lng) {
-  var lw = rad * -lng
-    , phi = rad * lat
-    , d = toDays(date)
-
-    , c = sunCoords(d)
-    , H = siderealTime(d, lw) - c.ra;
+export function getPosition(date, lat, lng) {
+  var lw = rad * -lng,
+    phi = rad * lat,
+    d = toDays(date),
+    c = sunCoords(d),
+    H = siderealTime(d, lw) - c.ra;
 
   return {
     azimuth: azimuth(H, phi, c.dec),
-    altitude: altitude(H, phi, c.dec)
+    altitude: altitude(H, phi, c.dec),
   };
 }
 
@@ -122,12 +120,12 @@ export function getPosition (date, lat, lng) {
 
 /* @type {Array<SunTime>} */
 export const times = [
-  { angle: -0.833, riseName: 'sunrise', setName: 'sunset' },
-  { angle: -0.3, riseName: 'sunriseEnd', setName: 'sunsetStart' },
-  { angle: -6, riseName: 'dawn', setName: 'dusk' },
-  { angle: -12, riseName: 'nauticalDawn', setName: 'nauticalDusk' },
-  { angle: -18, riseName: 'nightEnd', setName: 'night' },
-  { angle: 6, riseName: 'goldenHourEnd', setName: 'goldenHour' }
+  { angle: -0.833, riseName: "sunrise", setName: "sunset" },
+  { angle: -0.3, riseName: "sunriseEnd", setName: "sunsetStart" },
+  { angle: -6, riseName: "dawn", setName: "dusk" },
+  { angle: -12, riseName: "nauticalDawn", setName: "nauticalDusk" },
+  { angle: -18, riseName: "nightEnd", setName: "night" },
+  { angle: 6, riseName: "goldenHourEnd", setName: "goldenHour" },
 ];
 
 // adds a custom time to the times config
@@ -137,7 +135,7 @@ export const times = [
  * @param {string} riseName
  * @param {string} setName
  */
-export function addTime (angle, riseName, setName) {
+export function addTime(angle, riseName, setName) {
   times.push({ angle, riseName, setName });
 }
 
@@ -145,36 +143,36 @@ export function addTime (angle, riseName, setName) {
 
 const J0 = 0.0009;
 
-function julianCycle (d, lw) {
+function julianCycle(d, lw) {
   const { round } = Math;
 
-  return round(d - J0 - (lw / TAU));
+  return round(d - J0 - lw / TAU);
 }
 
-function approxTransit (Ht, lw, n) {
+function approxTransit(Ht, lw, n) {
   return J0 + (Ht + lw) / TAU + n;
 }
 
-function solarTransitJ (ds, M, L) {
+function solarTransitJ(ds, M, L) {
   const { sin } = Math;
 
   return J2000 + ds + 0.0053 * sin(M) - 0.0069 * sin(2 * L);
 }
 
-function hourAngle (h, phi, d) {
+function hourAngle(h, phi, d) {
   const { sin, cos, acos } = Math;
 
   return acos((sin(h) - sin(phi) * sin(d)) / (cos(phi) * cos(d)));
 }
 
-function observerAngle (height) {
-  return -2.076 * Math.sqrt(height) / 60;
+function observerAngle(height) {
+  return (-2.076 * Math.sqrt(height)) / 60;
 }
 
 // returns set time for the given sun altitude
-function getSetJ (h, lw, phi, dec, n, M, L) {
-  var w = hourAngle(h, phi, dec)
-    , a = approxTransit(w, lw, n);
+function getSetJ(h, lw, phi, dec, n, M, L) {
+  var w = hourAngle(h, phi, dec),
+    a = approxTransit(w, lw, n);
 
   return solarTransitJ(a, M, L);
 }
@@ -182,7 +180,21 @@ function getSetJ (h, lw, phi, dec, n, M, L) {
 // calculates sun times for a given date, latitude/longitude, and, optionally,
 // the observer height (in meters) relative to the horizon
 
-export function getTimes (date, lat, lng, height) {
+/**
+ *  @typedef Times
+ *  @prop {Date} solarNoon
+ *  @prop {Date} nadir
+ */
+
+/**
+ *
+ * @param {Date} date
+ * @param {number} lat
+ * @param {number} lng
+ * @param {number} [height]
+ * @returns {Times}
+ */
+export function getTimes(date, lat, lng, height) {
   height = height || 0;
 
   const lw = rad * -lng;
@@ -204,7 +216,7 @@ export function getTimes (date, lat, lng, height) {
 
   const result = {
     solarNoon: fromJulian(Jnoon),
-    nadir: fromJulian(Jnoon - 0.5)
+    nadir: fromJulian(Jnoon - 0.5),
   };
 
   for (let i = 0, len = times.length; i < len; i += 1) {
@@ -223,31 +235,40 @@ export function getTimes (date, lat, lng, height) {
 
 // moon calculations, based on http://aa.quae.nl/en/reken/hemelpositie.html formulas
 
-function moonCoords (d) { // geocentric ecliptic coordinates of the moon
+function moonCoords(d) {
+  // geocentric ecliptic coordinates of the moon
   const { sin, cos } = Math;
 
-  var L = rad * (218.316 + 13.176396 * d) // ecliptic longitude
-    , M = rad * (134.963 + 13.064993 * d) // mean anomaly
-    , F = rad * (93.272 + 13.229350 * d) // mean distance
-
-    , l = L + rad * 6.289 * sin(M) // longitude
-    , b = rad * 5.128 * sin(F) // latitude
-    , dt = 385001 - 20905 * cos(M); // distance to the moon in km
+  var L = rad * (218.316 + 13.176396 * d), // ecliptic longitude
+    M = rad * (134.963 + 13.064993 * d), // mean anomaly
+    F = rad * (93.272 + 13.22935 * d), // mean distance
+    l = L + rad * 6.289 * sin(M), // longitude
+    b = rad * 5.128 * sin(F), // latitude
+    dt = 385001 - 20905 * cos(M); // distance to the moon in km
 
   return {
     ra: rightAscension(l, b),
     dec: declination(l, b),
-    dist: dt
+    dist: dt,
   };
 }
+
+/**
+ *  @typedef MoonPosition
+ *  @prop {number} azimuth
+ *  @prop {number} altitude
+ *  @prop {number} distance
+ *  @prop {number} parallacticAngle
+ */
 
 /**
  *
  * @param {Date} date
  * @param {number} lat
  * @param {number} lng
+ * @returns {MoonPosition}
  */
-export function getMoonPosition (date, lat, lng) {
+export function getMoonPosition(date, lat, lng) {
   const { atan2, sin, tan, cos } = Math;
 
   const lw = rad * -lng;
@@ -267,7 +288,7 @@ export function getMoonPosition (date, lat, lng) {
     azimuth: azimuth(H, phi, c.dec),
     altitude: h,
     distance: c.dist,
-    parallacticAngle: pa
+    parallacticAngle: pa,
   };
 }
 
@@ -275,34 +296,61 @@ export function getMoonPosition (date, lat, lng) {
 // based on http://idlastro.gsfc.nasa.gov/ftp/pro/astro/mphase.pro formulas and
 // Chapter 48 of "Astronomical Algorithms" 2nd edition by Jean Meeus (Willmann-Bell, Richmond) 1998.
 
-export function getMoonIllumination (date) {
+/**
+ *  @typedef MoonIllumination
+ *  @prop {number} fraction
+ *  @prop {number} phase
+ *  @prop {number} angle
+ */
+
+/**
+ * @param {Date} date
+ * @returns {MoonIllumination}
+ */
+export function getMoonIllumination(date) {
   const { acos, sin, cos, atan2 } = Math;
 
-  var d = toDays(date || new Date())
-    , s = sunCoords(d)
-    , m = moonCoords(d)
-
-    , sdist = 149598000 // distance from Earth to Sun in km
-
-    , phi = acos(sin(s.dec) * sin(m.dec) + cos(s.dec) * cos(m.dec) * cos(s.ra - m.ra))
-    , inc = atan2(sdist * sin(phi), m.dist - sdist * cos(phi))
-    , angle = atan2(cos(s.dec) * sin(s.ra - m.ra), sin(s.dec) * cos(m.dec) -
-                cos(s.dec) * sin(m.dec) * cos(s.ra - m.ra));
+  var d = toDays(date || new Date()),
+    s = sunCoords(d),
+    m = moonCoords(d),
+    sdist = 149598000, // distance from Earth to Sun in km
+    phi = acos(
+      sin(s.dec) * sin(m.dec) + cos(s.dec) * cos(m.dec) * cos(s.ra - m.ra),
+    ),
+    inc = atan2(sdist * sin(phi), m.dist - sdist * cos(phi)),
+    angle = atan2(
+      cos(s.dec) * sin(s.ra - m.ra),
+      sin(s.dec) * cos(m.dec) - cos(s.dec) * sin(m.dec) * cos(s.ra - m.ra),
+    );
 
   return {
     fraction: (1 + cos(inc)) / 2,
-    phase: 0.5 + 0.5 * inc * (angle < 0 ? -1 : 1) / Math.PI,
-    angle: angle
+    phase: 0.5 + (0.5 * inc * (angle < 0 ? -1 : 1)) / Math.PI,
+    angle: angle,
   };
 }
 
-function hoursLater (date, h) {
-  return new Date(date.valueOf() + h * dayMs / 24);
+function hoursLater(date, h) {
+  return new Date(date.valueOf() + (h * dayMs) / 24);
 }
 
 // calculations for moon rise/set times are based on http://www.stargazing.net/kepler/moonrise.html article
 
-export function getMoonTimes (date, lat, lng, inUTC) {
+/**
+ *  @typedef MoonTimes
+ *  @prop {Date} rise
+ *  @prop {Date} set
+ */
+
+/**
+ *
+ * @param {Date} date
+ * @param {number} lat
+ * @param {number} lng
+ * @param {boolean} inUTC
+ * @returns {MoonTimes}
+ */
+export function getMoonTimes(date, lat, lng, inUTC) {
   const { sqrt, abs } = Math;
   const t = new Date(date);
 
@@ -384,7 +432,7 @@ export function getMoonTimes (date, lat, lng, inUTC) {
   }
 
   if (!rise && !set) {
-    result[ye > 0 ? 'alwaysUp' : 'alwaysDown'] = true;
+    result[ye > 0 ? "alwaysUp" : "alwaysDown"] = true;
   }
 
   return result;

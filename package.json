@@ -30,31 +30,21 @@
   },
   "types": "./index.d.ts",
   "devDependencies": {
-    "eslint": "^8.8.0",
-    "eslint-config-mourner": "^2.0.1",
-    "tape": "^5.5.0"
-  },
-  "eslintConfig": {
-    "extends": "mourner",
-    "rules": {
-      "indent": 0,
-      "array-bracket-spacing": 0,
-      "strict": 0,
-      "brace-style": 0
-    },
-    "env": {
-      "amd": true
-    }
+    "@biomejs/biome": "1.5.2",
+    "vite": "^5.0.12",
+    "vite-plugin-dts": "^3.7.1",
+    "vitest": "^1.2.1"
   },
   "files": [
-    "suncalc.js"
+    "dist"
   ],
   "scripts": {
-    "release": "time ./scripts/release.sh",
-    "build": "time ./scripts/build.sh",
-    "eslint": "eslint index.js test.js",
-    "ts": "tsc -p jsconfig.json --noEmit",
-    "pretest": "npm run eslint && npm run ts",
-    "test": "npx ava"
+    "dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview",
+		"test": "vitest",
+		"biome": "npx @biomejs/biome check ./src",
+		"biome:fix": "npx @biomejs/biome check --apply ./src",
+		"prepublishOnly": "npx @skypack/package-check"
   }
 }
