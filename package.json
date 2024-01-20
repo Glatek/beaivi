@@ -24,9 +24,10 @@
     "type": "git",
     "url": "git://github.com/Glatek/beaivi.git"
   },
-  "main": "index.js",
+  "module": "index.js",
   "exports": {
-    "import": "./index.js"
+    "import": "./index.js",
+    "default": "./index.js"
   },
   "types": "./index.d.ts",
   "devDependencies": {

@@ -1,36 +1,37 @@
-const k = Math.PI * 2, d = Math.PI / 180, L = 1e3 * 60 * 60 * 24, z = 2440588, E = 2451545;
+const v = Math.PI * 2, d = Math.PI / 180, b = 1e3 * 60 * 60 * 24, z = 2440588, E = 2451545;
 function V(t) {
-  return t.valueOf() / L - 0.5 + z;
+  return t.valueOf() / b - 0.5 + z;
 }
-function y(t) {
-  return new Date((t + 0.5 - z) * L);
+function P(t) {
+  return new Date((t + 0.5 - z) * b);
 }
-function A(t) {
+function C(t) {
   return V(t) - E;
 }
-const x = d * 23.4397;
+const A = d * 23.4397;
 function U(t, n) {
-  const { sin: e, cos: s, tan: o, atan2: c } = Math;
-  return c(e(t) * s(x) - o(n) * e(x), s(t));
+  const { sin: e, cos: s, tan: o, atan2: a } = Math;
+  return a(e(t) * s(A) - o(n) * e(A), s(t));
 }
-function b(t, n) {
+function k(t, n) {
   const { asin: e, sin: s, cos: o } = Math;
-  return e(s(n) * o(x) + o(n) * s(x) * s(t));
+  return e(s(n) * o(A) + o(n) * s(A) * s(t));
 }
 function q(t, n, e) {
-  const { atan2: s, sin: o, cos: c, tan: a } = Math;
-  return s(o(t), c(t) * o(n) - a(e) * c(n));
+  const { atan2: s, sin: o, cos: a, tan: c } = Math;
+  return s(o(t), a(t) * o(n) - c(e) * a(n));
 }
 function O(t, n, e) {
-  const { asin: s, sin: o, cos: c } = Math;
-  return s(o(n) * o(e) + c(n) * c(e) * c(t));
+  const { asin: s, sin: o, cos: a } = Math;
+  return s(o(n) * o(e) + a(n) * a(e) * a(t));
 }
 function S(t, n) {
   return d * (280.16 + 360.9856235 * t) - n;
 }
 function W(t) {
-  const { tan: n } = Math;
-  return t < 0 && (t = 0), 2967e-7 / n(t + 312536e-8 / (t + 0.08901179));
+  let n = t;
+  const { tan: e } = Math;
+  return n < 0 && (n = 0), 2967e-7 / e(n + 312536e-8 / (n + 0.08901179));
 }
 function j(t) {
   return d * (357.5291 + 0.98560028 * t);
@@ -42,18 +43,18 @@ function F(t) {
 function R(t) {
   const n = j(t), e = F(n);
   return {
-    dec: b(e, 0),
+    dec: k(e, 0),
     ra: U(e, 0)
   };
 }
 function $(t, n, e) {
-  var s = d * -e, o = d * n, c = A(t), a = R(c), r = S(c, s) - a.ra;
+  const s = d * -e, o = d * n, a = C(t), c = R(a), i = S(a, s) - c.ra;
   return {
-    azimuth: q(r, o, a.dec),
-    altitude: O(r, o, a.dec)
+    azimuth: q(i, o, c.dec),
+    altitude: O(i, o, c.dec)
   };
 }
-const I = [
+const L = [
   { angle: -0.833, riseName: "sunrise", setName: "sunset" },
   { angle: -0.3, riseName: "sunriseEnd", setName: "sunsetStart" },
   { angle: -6, riseName: "dawn", setName: "dusk" },
@@ -62,69 +63,66 @@ const I = [
   { angle: 6, riseName: "goldenHourEnd", setName: "goldenHour" }
 ];
 function tt(t, n, e) {
-  I.push({ angle: t, riseName: n, setName: e });
+  L.push({ angle: t, riseName: n, setName: e });
 }
 const B = 9e-4;
 function X(t, n) {
   const { round: e } = Math;
-  return e(t - B - n / k);
+  return e(t - B - n / v);
 }
 function G(t, n, e) {
-  return B + (t + n) / k + e;
+  return B + (t + n) / v + e;
 }
 function K(t, n, e) {
   const { sin: s } = Math;
   return E + t + 53e-4 * s(n) - 69e-4 * s(2 * e);
 }
 function Y(t, n, e) {
-  const { sin: s, cos: o, acos: c } = Math;
-  return c((s(t) - s(n) * s(e)) / (o(n) * o(e)));
+  const { sin: s, cos: o, acos: a } = Math;
+  return a((s(t) - s(n) * s(e)) / (o(n) * o(e)));
 }
 function Z(t) {
   return -2.076 * Math.sqrt(t) / 60;
 }
-function _(t, n, e, s, o, c, a) {
-  var r = Y(t, e, s), i = G(r, n, o);
-  return K(i, c, a);
+function _(t, n, e, s, o, a, c) {
+  const i = Y(t, e, s), r = G(i, n, o);
+  return K(r, a, c);
 }
-function nt(t, n, e, s) {
-  s = s || 0;
-  const o = d * -e, c = d * n, a = Z(s), r = A(t), i = X(r, o), h = G(0, o, i), u = j(h), l = F(u), M = b(l, 0), f = K(h, u, l);
-  let g, w, p, T;
+function nt(t, n, e, s = 0) {
+  const o = d * -e, a = d * n, c = Z(s), i = C(t), r = X(i, o), h = G(0, o, r), u = j(h), l = F(u), g = k(l, 0), f = K(h, u, l);
+  let M, w, p, T;
   const N = {
-    solarNoon: y(f),
-    nadir: y(f - 0.5)
+    solarNoon: P(f),
+    nadir: P(f - 0.5)
   };
-  for (let m = 0, D = I.length; m < D; m += 1)
-    g = I[m], w = (g.angle + a) * d, p = _(w, o, c, M, i, u, l), T = f - (p - f), N[g.riseName] = y(T), N[g.setName] = y(p);
+  for (let m = 0, D = L.length; m < D; m += 1)
+    M = L[m], w = (M.angle + c) * d, p = _(w, o, a, g, r, u, l), T = f - (p - f), N[M.riseName] = P(T), N[M.setName] = P(p);
   return N;
 }
 function Q(t) {
-  const { sin: n, cos: e } = Math;
-  var s = d * (218.316 + 13.176396 * t), o = d * (134.963 + 13.064993 * t), c = d * (93.272 + 13.22935 * t), a = s + d * 6.289 * n(o), r = d * 5.128 * n(c), i = 385001 - 20905 * e(o);
+  const { sin: n, cos: e } = Math, s = d * (218.316 + 13.176396 * t), o = d * (134.963 + 13.064993 * t), a = d * (93.272 + 13.22935 * t), c = s + d * 6.289 * n(o), i = d * 5.128 * n(a), r = 385001 - 20905 * e(o);
   return {
-    ra: U(a, r),
-    dec: b(a, r),
-    dist: i
+    ra: U(c, i),
+    dec: k(c, i),
+    dist: r
   };
 }
-function H(t, n, e) {
-  const { atan2: s, sin: o, tan: c, cos: a } = Math, r = d * -e, i = d * n, h = A(t), u = Q(h), l = S(h, r) - u.ra, M = s(o(l), c(i) * a(u.dec) - o(u.dec) * a(l));
-  let f = O(l, i, u.dec);
+function I(t, n, e) {
+  const { atan2: s, sin: o, tan: a, cos: c } = Math, i = d * -e, r = d * n, h = C(t), u = Q(h), l = S(h, i) - u.ra, g = s(o(l), a(r) * c(u.dec) - o(u.dec) * c(l));
+  let f = O(l, r, u.dec);
   return f += W(f), {
-    azimuth: q(l, i, u.dec),
+    azimuth: q(l, r, u.dec),
     altitude: f,
     distance: u.dist,
-    parallacticAngle: M
+    parallacticAngle: g
   };
 }
 function et(t) {
-  const { acos: n, sin: e, cos: s, atan2: o } = Math;
-  var c = A(t || /* @__PURE__ */ new Date()), a = R(c), r = Q(c), i = 149598e3, h = n(
-    e(a.dec) * e(r.dec) + s(a.dec) * s(r.dec) * s(a.ra - r.ra)
-  ), u = o(i * e(h), r.dist - i * s(h)), l = o(
-    s(a.dec) * e(a.ra - r.ra),
-    e(a.dec) * s(r.dec) - s(a.dec) * e(r.dec) * s(a.ra - r.ra)
+  const { acos: n, sin: e, cos: s, atan2: o } = Math, a = C(t || /* @__PURE__ */ new Date()), c = R(a), i = Q(a), r = 149598e3, h = n(
+    e(c.dec) * e(i.dec) + s(c.dec) * s(i.dec) * s(c.ra - i.ra)
+  ), u = o(r * e(h), i.dist - r * s(h)), l = o(
+    s(c.dec) * e(c.ra - i.ra),
+    e(c.dec) * s(i.dec) - s(c.dec) * e(i.dec) * s(c.ra - i.ra)
   );
   return {
     fraction: (1 + s(u)) / 2,
@@ -132,25 +130,25 @@ function et(t) {
     angle: l
   };
 }
-function P(t, n) {
-  return new Date(t.valueOf() + n * L / 24);
+function x(t, n) {
+  return new Date(t.valueOf() + n * b / 24);
 }
 function st(t, n, e, s) {
-  const { sqrt: o, abs: c } = Math, a = new Date(t);
-  s ? a.setUTCHours(0, 0, 0, 0) : a.setHours(0, 0, 0, 0);
-  const r = 0.133 * d;
-  let i = H(a, n, e).altitude - r, h, u, l, M, f, g, w, p, T, N, m, D, C;
-  for (let J = 1; J <= 24 && (h = H(P(a, J), n, e).altitude - r, u = H(P(a, J + 1), n, e).altitude - r, f = (i + u) / 2 - h, g = (u - i) / 2, w = -g / (2 * f), p = (f * w + g) * w + h, T = g * g - 4 * f * h, N = 0, T >= 0 && (C = o(T) / (c(f) * 2), m = w - C, D = w + C, c(m) <= 1 && N++, c(D) <= 1 && N++, m < -1 && (m = D)), N === 1 ? i < 0 ? l = J + m : M = J + m : N === 2 && (l = J + (p < 0 ? D : m), M = J + (p < 0 ? m : D)), !(l && M)); J += 2)
-    i = u;
-  const v = {};
-  return l && (v.rise = P(a, l)), M && (v.set = P(a, M)), !l && !M && (v[p > 0 ? "alwaysUp" : "alwaysDown"] = !0), v;
+  const { sqrt: o, abs: a } = Math, c = new Date(t);
+  s ? c.setUTCHours(0, 0, 0, 0) : c.setHours(0, 0, 0, 0);
+  const i = 0.133 * d;
+  let r = I(c, n, e).altitude - i, h, u, l, g, f, M, w, p, T, N, m, D, H;
+  for (let J = 1; J <= 24 && (h = I(x(c, J), n, e).altitude - i, u = I(x(c, J + 1), n, e).altitude - i, f = (r + u) / 2 - h, M = (u - r) / 2, w = -M / (2 * f), p = (f * w + M) * w + h, T = M * M - 4 * f * h, N = 0, T >= 0 && (H = o(T) / (a(f) * 2), m = w - H, D = w + H, a(m) <= 1 && N++, a(D) <= 1 && N++, m < -1 && (m = D)), N === 1 ? r < 0 ? l = J + m : g = J + m : N === 2 && (l = J + (p < 0 ? D : m), g = J + (p < 0 ? m : D)), !(l && g)); J += 2)
+    r = u;
+  const y = {};
+  return l && (y.rise = x(c, l)), g && (y.set = x(c, g)), !l && !g && (y[p > 0 ? "alwaysUp" : "alwaysDown"] = !0), y;
 }
 export {
   tt as addTime,
   et as getMoonIllumination,
-  H as getMoonPosition,
+  I as getMoonPosition,
   st as getMoonTimes,
   $ as getPosition,
   nt as getTimes,
-  I as times
+  L as times
 };
