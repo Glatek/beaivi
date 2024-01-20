@@ -1,7 +1,7 @@
 {
   "name": "beaivi",
   "type": "module",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "description": "A tiny JavaScript library for calculating sun/moon positions and phases. Based on Suncalc.",
   "homepage": "https://github.com/Glatek/beaivi",
   "keywords": [
@@ -40,11 +40,11 @@
   ],
   "scripts": {
     "dev": "vite",
-		"build": "vite build",
-		"preview": "vite preview",
-		"test": "vitest",
-		"biome": "npx @biomejs/biome check ./src",
-		"biome:fix": "npx @biomejs/biome check --apply ./src",
-		"prepublishOnly": "npx @skypack/package-check"
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "biome": "npx @biomejs/biome check ./src",
+    "biome:fix": "npx @biomejs/biome check --apply ./src",
+    "prepublishOnly": "npx @skypack/package-check"
   }
 }
