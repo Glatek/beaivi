@@ -24,12 +24,12 @@
     "type": "git",
     "url": "git://github.com/Glatek/beaivi.git"
   },
-  "module": "index.js",
+  "module": "./dist/index.js",
   "exports": {
-    "import": "./index.js",
-    "default": "./index.js"
+    "import": "./dist/index.js",
+    "default": "./dist/index.js"
   },
-  "types": "./index.d.ts",
+  "types": "./dist/index.d.ts",
   "devDependencies": {
     "@biomejs/biome": "1.5.2",
     "vite": "^5.0.12",
