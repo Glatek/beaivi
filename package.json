@@ -2,8 +2,8 @@
   "name": "beaivi",
   "type": "module",
   "version": "0.0.6",
-  "description": "A tiny JavaScript library for calculating sun/moon positions and phases.",
-  "homepage": "https://github.com/Vufuzi/beaivi",
+  "description": "A tiny JavaScript library for calculating sun/moon positions and phases. Based on Suncalc.",
+  "homepage": "https://github.com/Glatek/beaivi",
   "keywords": [
     "sun",
     "astronomy",
@@ -18,11 +18,11 @@
   "license": "BSD",
   "contributors": [
     "Vladimir Agafonkin <agafonkin@gmail.com> (https://github.com/mourner)",
-    "Jeremy Karlsson <karlsson@jeremy.se> (https://jeremy.se)"
+    "Jeremy Karlsson <karlsson@jeremy.se> (https://github.com/enjikaka)"
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/Vufuzi/beaivi.git"
+    "url": "git://github.com/Glatek/beaivi.git"
   },
   "main": "index.js",
   "exports": {
@@ -30,12 +30,25 @@
   },
   "types": "./index.d.ts",
   "devDependencies": {
-    "ava": "^3.13.0",
-    "eslint": "^7.14.0",
-    "eslint-config-tidal": "^1.2.0",
-    "tap": "^14.11.0",
-    "esbuild": "^0.8.56"
+    "eslint": "^8.8.0",
+    "eslint-config-mourner": "^2.0.1",
+    "tape": "^5.5.0"
   },
+  "eslintConfig": {
+    "extends": "mourner",
+    "rules": {
+      "indent": 0,
+      "array-bracket-spacing": 0,
+      "strict": 0,
+      "brace-style": 0
+    },
+    "env": {
+      "amd": true
+    }
+  },
+  "files": [
+    "suncalc.js"
+  ],
   "scripts": {
     "release": "time ./scripts/release.sh",
     "build": "time ./scripts/build.sh",
